@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<!-- 
+		/resources/** :  resources 폴더 아래 하위 모든 경로(폴더/파일)
+		-> /resources/a.jpg      /resources/b.txt       /resources/images/a.jpg 
+		   /resources/images/profile/b.jpg 
+		   
+		/resources/* :  resources 폴더를 기준으로 바로 하위 폴더만 
+		-> /resources/a.jpg      /resources/b.txt 
+		 아래 경로는 매핑이 되지 않음
+		-> /resources/images/a.jpg    /resources/images/profile/b.jpg 
+		
+		resources 태그 : 컨트롤러에게 요청이 전달되지 않고 물리적으로 존재하는 폴더에 접근해
+		resource를 정상적으로 가져올 수 있게끔 url을 매핑시켜주는 역할 
+	 -->
+	<resources mapping="/resources/**" location="/resources/" />
+
+	<!-- 프로필 사진 경로 resources 설정 -->
+	<resources mapping="/profile/*" location="/profile/" />
+	
+	<!-- 프로필 사진 경로 resources 설정 -->
+	<resources mapping="/board/*" location="/board/" />
+	
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+	
+	<context:component-scan base-package="kh.board.*" />
+	
+	<!-- multipartResolver -->
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<beans:property name="maxUploadSize" value="10485760"></beans:property> <!-- 최대파일크기 10MB -->
+	</beans:bean>
+	
+	<!-- 로그인 검사 인터셉터 등록 -->
+	<interceptors>
+		<interceptor>
+			<mapping path="/**"/>
+			<exclude-mapping path="/"/> <!-- 해당 url만 interceptor 제외 -->
+			<exclude-mapping path="/resources/**"/> <!-- css와 이미지 불러올떄 필요 -->
+			<exclude-mapping path="/member/login"/> <!-- 해당 url만 interceptor 제외 -->
+			<exclude-mapping path="/member/toSignup"/> <!-- 해당 url만 interceptor 제외 -->
+			<exclude-mapping path="/member/checkLogin"/> <!-- 해당 url만 interceptor 제외 -->
+			<exclude-mapping path="/member/signup"/> <!-- 해당 url만 interceptor 제외 -->
+			<exclude-mapping path="/toError"/> <!-- 해당 url만 interceptor 제외 -->
+			<beans:bean class="kh.board.utils.AuthLoginInerceptor"/> 
+		</interceptor>
+	</interceptors>
+	
+	
+	
+	
+</beans:beans>

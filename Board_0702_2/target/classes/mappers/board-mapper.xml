@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   
+
+   
+ <mapper namespace="boardMapper">
+ 
+ 	<!-- 모든 게시글 가져오기 -->
+ 	<select id="selectBoard" resultType="kh.board.board.BoardDTO">
+ 		select * from board
+ 	</select>
+ 
+ 	<!-- 글쓰기 -->
+ 	<insert id="boardInsert" parameterType="kh.board.board.BoardDTO">
+ 		insert into board values(#{seq_board},#{title},#{content},#{writer_nickname},#{writer_id},0,sysdate)
+ 	</insert>
+ 	
+ 	<!-- 하나의 글 가져오기 -->
+ 	<select id="selectOne" parameterType="int" resultType="kh.board.board.BoardDTO">
+ 		select * from board where seq_board = #{seq_board}
+ 	</select>
+ 	
+ 	<!-- 게시글 삭제 -->
+ 	<delete id="delete" parameterType="int">
+ 		delete from board where seq_board = #{seq_board}
+ 	</delete>
+ 	
+ 	<!-- 게시글 수정 -->
+ 	<update id="modify" parameterType="kh.board.board.BoardDTO">
+ 		update board set title=#{title},content=#{content} where seq_board=#{seq_board}
+ 	</update>
+ 	
+ </mapper>

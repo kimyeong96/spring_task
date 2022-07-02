@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<bean id="bds" class="org.apache.commons.dbcp2.BasicDataSource">
+		<property name="username" value="board"/>
+		<property name="password" value="board"/>
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+		<property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
+		<property name="initialSize" value="30"/>
+	</bean>
+	
+	<!-- SqlSessionFactoryBean 빈 등록 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 1. DBCP 세터 주입 -> 위에서 만든 DBCP 빈을 세터로 주입-->
+		<property name="dataSource" ref="bds"/>
+		
+		<!-- 2. mapper 세터 주입 -> 실제 등록해주고 싶은 mapper 파일이 위치한 경로값을 value  -->
+		<!-- classpath 의미 -> src/main/resource 폴더 안에 -->
+		<property name="mapperLocations" value="classpath:mappers/*.xml"/>
+		
+		<!-- mappers 폴더 안에 있는 여러개의 메퍼파일을 등록하고 싶은 경우 
+		<property name="mapperLocations" value="classpath:mappers/*.xml"/> -->
+	</bean>
+	
+	<!-- SqlSession 빈 등록 -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<!-- 위에서 생성 SqlSessionFactoryBean에 생성자로 주입-->
+		<constructor-arg ref="sqlSessionFactory"/>
+	</bean>
+</beans>
